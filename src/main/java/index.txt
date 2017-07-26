@@ -1,0 +1,102 @@
+JMS:
+java message service,
+middle ware是一种中间件技术
+消息的传送方式：
+	a:点对点模式 queue
+	b:主题模式，发布订阅模式 publish-subscribe
+kafka：
+	分布式流计算平台
+	类似于消息系统发布订阅数据流
+	以分布式，副本集群方式存储数据流
+	实时处理数据流
+
+	构建实时数据流管道，水平可伸缩，容错，速度快
+
+	特点：
+	1.巨量数据，TB级
+	2.高吞吐量，支持每秒钟百万小时
+	3.分布式，支持在多个server之间进行消息分区
+	4.多客户端支持，和多语言进行协同
+安装kafka：
+	:quick start
+	http://kafka.apache.org/documentation.html#quickstart：
+	修改kafka zk配置config/zookeeper.properties
+	dataDir=G:/Big-File/Architecture/storm/kafka_2.10-0.9.0.0/zookeeper
+	：启动zk
+	cd G:\Big-File\Architecture\storm\kafka_2.10-0.9.0.0
+	bin\windows\zookeeper-server-start   config/zookeeper.properties
+	：修改kafka配置config/server.properties
+	log.dirs=G:/Big-File/Architecture/storm/kafka_2.10-0.9.0.0/kafka-logs
+	num.partitions=1
+	：启动kafka
+	bin\windows\kafka-server-start   config/server.properties
+	：创建主题
+	bin\windows\kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
+	：查看主题
+	bin\windows\kafka-topics --list --zookeeper localhost:2181
+	：发送消息
+	bin\windows\kafka-console-producer --broker-list localhost:9092 --topic test
+	：接收消息
+	bin\windows\kafka-console-consumer --zookeeper localhost:2181 --topic test --from-beginning
+	：查看主题信息
+	bin\windows\kafka-topics --describe --zookeeper localhost:2181 --topic test
+kafka是消息系统：
+	zk：协同系统
+	broker：代理，kafka server
+	producer：生产者
+	consumer：消费者
+	topic：主题
+kafka的核心部分：
+	1.消息缓存与fileSystem的存储，数据被即刻写入os内核页，并缓存以及清理磁盘（可以配置）
+	2.消息被消费后，kafka长时间驻留消息，如有必要，可以实现重复消费
+	3.对分组消息使用消息集合，防止网络过载
+	4.使用消费者保持着消息元数据
+	5.消费者状态默认在zk中，也可以存在于其他OLTP中
+	6，kafka中的生产和消费是pull-push模式
+	7.kafka没有主从模式，所有的broker地位相同，broker元数据均在zk中维护，病在producer和consumer之间共享
+	8.kafka的LB（load balance）策略运行producer 动态发信broker
+	9.producer维护 broker的连接池，并能够通过zk的warcher call机制实时进行更新
+	10.producer可以选择同步或异步的方式向broker发送消息
+
+消息压缩：
+	1.producer压缩消息，consumer解压缩
+	2.压缩的消息都没有深度限制
+	3.在message的header中有一个compress type
+			x x-->压缩类型（0：未压缩）
+kafkaz镜像：
+	将源集群的数据副本话到target kafka集群
+构建完全分布式kafka集群：
+	1.使用外部zk集群存放kafka的数据
+		a.启动S101-S103的zk
+			ssh s101 zkServer.sh.start
+			ssh s102 zkServer.sh.start
+			ssh s103 zkServer.sh.start
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
